@@ -35,9 +35,6 @@ npm start
 
 ### Step 3: Access the Site
 1. Open your browser and go to: **[http://localhost:4200](http://localhost:4200)** (which will redirect to `/login`).
-2. **Admin Credentials:**
-   - **Email:** `jdk123@gmail.com`
-   - **Password:** `#jdk123#`
 
 ---
 
