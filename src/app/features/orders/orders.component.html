@@ -1,0 +1,98 @@
+<div class="page-container">
+    <div class="page-header">
+        <h2>Order Management</h2>
+    </div>
+
+    <div class="filters-bar">
+        <div class="search-box">
+            <input type="text" placeholder="Search by Product ID..." class="form-control" [(ngModel)]="searchTerm"
+                (keyup.enter)="onSearchChange()">
+            <button class="btn btn-primary ml-2" (click)="onSearchChange()">Search</button>
+        </div>
+
+        <div class="filter-box flex items-center">
+            <label class="mr-2">Status:</label>
+            <select class="form-control status-select" [(ngModel)]="statusFilter" (change)="onFilterChange()">
+                <option value="">All Statuses</option>
+                <option value="Pending">Pending</option>
+                <option value="Shipped">Shipped</option>
+                <option value="Delivered">Delivered</option>
+                <option value="Cancelled">Cancelled</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Loading & Error States -->
+    <div *ngIf="loading" class="text-center p-4">
+        <div class="spinner"></div>
+        <p>Loading orders...</p>
+    </div>
+
+    <div *ngIf="error" class="error-alert">
+        {{ error }}
+    </div>
+
+    <!-- Orders Table -->
+    <div class="table-card" *ngIf="!loading && !error">
+        <div class="table-responsive">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Order Info</th>
+                        <th>Customer</th>
+                        <th>Shipping Details</th>
+                        <th>Amount</th>
+                        <th>Status Update</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngIf="orders.length === 0">
+                        <td colspan="5" class="text-center py-4">No orders found.</td>
+                    </tr>
+                    <tr *ngFor="let order of orders">
+                        <td>
+                            <strong>#{{ order._id.substring(order._id.length - 8).toUpperCase() }}</strong>
+                            <div class="text-sm text-gray">{{ order.created_at | date:'medium' }}</div>
+                            <div class="text-xs mt-1">{{ order.total_quantity }} item(s)</div>
+                            <div class="text-xs text-secondary mt-1" *ngIf="order.products?.length > 0">
+                                <div *ngFor="let item of order.products">
+                                    • {{ item.product_name }} (x{{ item.quantity }})<span
+                                        *ngIf="item.size && item.size !== 'N/A'">, Size: {{ item.size }}</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div><strong>{{ order.full_name }}</strong></div>
+                            <div class="text-sm text-gray">{{ order.mobile_number }}</div>
+                            <div class="text-sm text-gray" *ngIf="order.user_id">{{ order.user_id?.email }}</div>
+                        </td>
+                        <td>
+                            <div class="shipping-address">
+                                {{ order.address }}<br>
+                                {{ order.city }}, {{ order.state }} - {{ order.pincode }}
+                            </div>
+                        </td>
+                        <td>
+                            <strong>{{ order.sub_total | currency:'INR' }}</strong>
+                            <div class="text-xs text-uppercase mt-1 payment-badge">{{ order.payment_method }}</div>
+                        </td>
+                        <td>
+                            <select class="status-dropdown" [ngClass]="order.status.toLowerCase()"
+                                [ngModel]="order.status" (ngModelChange)="updateOrderStatus(order, $event)"
+                                [disabled]="order.status === 'Cancelled' || order.status === 'Delivered'">
+                                <option value="Pending" *ngIf="!isOptionDisabled(order.status, 'Pending')">Pending
+                                </option>
+                                <option value="Shipped" *ngIf="!isOptionDisabled(order.status, 'Shipped')">Shipped
+                                </option>
+                                <option value="Delivered" *ngIf="!isOptionDisabled(order.status, 'Delivered')">
+                                    Delivered</option>
+                                <option value="Cancelled" *ngIf="!isOptionDisabled(order.status, 'Cancelled')">
+                                    Cancelled</option>
+                            </select>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

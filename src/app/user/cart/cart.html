@@ -1,0 +1,80 @@
+<div class="cart-container">
+
+    <div class="cart-header">
+        <h1>Shopping Cart</h1>
+        <span class="item-count">{{ cartService.totalQuantity() }} Items</span>
+    </div>
+
+    <div *ngIf="cartService.items().length === 0" class="empty-cart">
+        <h2>Your cart is empty</h2>
+        <p>Looks like you haven't added anything to your cart yet.</p>
+        <button routerLink="/user" class="shop-now-btn">Continue Shopping</button>
+    </div>
+
+    <div class="cart-content" *ngIf="cartService.items().length > 0">
+
+        <div class="cart-items">
+
+            <div class="cart-item" *ngFor="let item of cartService.items()">
+                <div class="item-image" [routerLink]="['/user/product', item.product_id]">
+                    <img [src]="getImageUrl(item.image)" [alt]="item.product_name">
+                </div>
+
+                <div class="item-details">
+                    <h3 class="item-name" [routerLink]="['/user/product', item.product_id]">{{ item.product_name }}</h3>
+                    <div class="item-size" style="font-size: 0.85em; color: #666; margin-bottom: 5px;"
+                        *ngIf="item.size && item.size !== 'N/A'">Size: {{ item.size }}</div>
+                    <span class="item-price">₹{{ item.price }}</span>
+
+                    <div class="item-actions">
+
+                        <div class="quantity-controller">
+                            <button (click)="updateQuantity(item.product_id, item.size, item.quantity - 1)"
+                                [disabled]="item.quantity <= 1">-</button>
+                            <input type="number" [value]="item.quantity" readonly>
+                            <button (click)="updateQuantity(item.product_id, item.size, item.quantity + 1)"
+                                [disabled]="item.quantity >= item.stock">+</button>
+                        </div>
+
+                        <button class="remove-btn" (click)="removeItem(item.product_id, item.size)">Remove</button>
+
+                    </div>
+                </div>
+
+                <div class="item-total">
+                    ₹{{ item.price * item.quantity }}
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Order Summary Sidebar -->
+        <div class="order-summary">
+            <h2>Order Summary</h2>
+
+            <div class="summary-row">
+                <span>Subtotal</span>
+                <span>₹{{ cartService.subTotal() }}</span>
+            </div>
+            <div class="summary-row">
+                <span>Shipping Estimate</span>
+                <span>₹50</span>
+            </div>
+
+            <div class="summary-total">
+                <span>Grand Total</span>
+                <span>₹{{ cartService.subTotal() + 50 }}</span>
+            </div>
+
+            <button routerLink="/user/checkout" class="checkout-btn">
+                Proceed to Checkout
+            </button>
+
+            <button class="clear-cart-btn" (click)="clearCart()">
+                Clear Cart
+            </button>
+
+        </div>
+
+    </div>
+</div>

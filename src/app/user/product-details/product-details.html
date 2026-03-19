@@ -1,0 +1,76 @@
+<div *ngIf="loading" class="loading-state">
+    <div class="spinner"></div>
+</div>
+
+<div *ngIf="error" class="error-state">
+    <p>{{ error }}</p>
+    <button routerLink="/user" class="back-btn">Return to Store</button>
+</div>
+
+<div class="product-container" *ngIf="!loading && !error && product">
+
+    <div class="product-gallery">
+        <div class="main-image">
+            <img [src]="getImageUrl(product.image)" [alt]="product.product_name">
+        </div>
+    </div>
+
+    <div class="product-info-panel">
+        <span class="category-badge">{{ product.category }}</span>
+        <h1 class="product-title">{{ product.product_name }}</h1>
+
+        <div class="price-section">
+            <span class="price">₹{{ product.price }}</span>
+            <span class="stock-status" [class.in-stock]="product.stock > 0" [class.out-of-stock]="product.stock <= 0">
+                {{ product.stock > 0 ? ('In Stock (' + product.stock + ')') : 'Out of Stock' }}
+            </span>
+        </div>
+
+        <div class="description-section">
+            <h3>Description</h3>
+            <p>{{ product.description || 'No description available for this product.' }}</p>
+        </div>
+
+        <!-- Action Section -->
+        <div class="action-section" *ngIf="product.stock > 0">
+            <div class="size-selector" *ngIf="product.sizes?.length" style="margin-bottom: 15px;">
+                <label style="font-weight: 600; margin-right: 10px;">Size:</label>
+                <select [(ngModel)]="selectedSize" class="size-select"
+                    style="padding: 5px; border-radius: 4px; border: 1px solid #ddd;">
+                    <option *ngFor="let size of product.sizes" [value]="size">{{ size }}</option>
+                </select>
+            </div>
+
+            <div class="quantity-selector">
+                <button (click)="decreaseQuantity()" [disabled]="quantity <= 1">-</button>
+                <input type="number" [(ngModel)]="quantity" readonly>
+                <button (click)="increaseQuantity()" [disabled]="quantity >= product.stock">+</button>
+            </div>
+
+            <div class="action-buttons">
+                <button class="add-to-cart-large" (click)="addToCart()"
+                    [ngClass]="{'login-prompt': !userService.isLoggedIn()}">
+                    <span *ngIf="userService.isLoggedIn()">🛍️ Add to Cart</span>
+                    <span *ngIf="!userService.isLoggedIn()">🔒 Login to Purchase</span>
+                </button>
+
+                <button class="wishlist-btn-large" [class.active]="isInWishlist" (click)="toggleWishlist($event)"
+                    title="Toggle Wishlist">
+                    <span class="heart-icon">{{ isInWishlist ? '❤️' : '🤍' }}</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="out-of-stock-alert" *ngIf="product.stock <= 0">
+            This item is currently out of stock and cannot be added to your cart.
+            <div class="action-buttons" style="margin-top: 15px;">
+                <button class="wishlist-btn-large" [class.active]="isInWishlist" (click)="toggleWishlist($event)"
+                    title="Toggle Wishlist">
+                    <span class="heart-icon">{{ isInWishlist ? '❤️' : '🤍' }}</span> Add to Wishlist
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+</div>

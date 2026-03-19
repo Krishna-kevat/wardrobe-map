@@ -1,0 +1,187 @@
+<div class="page-container">
+    <div class="page-header d-flex justify-content-between align-items-center">
+        <h2>Product Management</h2>
+        <button class="btn btn-primary" (click)="openAddModal()">
+            Add Product
+        </button>
+    </div>
+
+    <div class="filters-bar">
+        <div class="filter-box">
+            <label>Filter by Category: </label>
+            <select class="form-control" style="display:inline-block; width:200px; margin-left:10px;"
+                [(ngModel)]="categoryFilter" (change)="onFilterChange()">
+                <option value="">All Categories</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Kids">Kids</option>
+            </select>
+        </div>
+        <div class="stats-text">
+            Total Products: {{ products.length }}
+        </div>
+    </div>
+
+    <!-- Loading & Error States -->
+    <div *ngIf="loading" class="text-center p-4">
+        <div class="spinner"></div>
+        <p>Loading products...</p>
+    </div>
+
+    <div *ngIf="error" class="error-alert">
+        {{ error }}
+    </div>
+
+    <!-- Products List -->
+    <div class="table-card" *ngIf="!loading && !error">
+        <div class="table-responsive">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Image</th>
+                        <th>Product Name & Title</th>
+                        <th>Category</th>
+                        <th>Price</th>
+                        <th>Stock</th>
+                        <th>Wishlists</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngIf="products.length === 0">
+                        <td colspan="6" class="text-center py-4">No products found.</td>
+                    </tr>
+                    <tr *ngFor="let product of products">
+                        <td>
+                            <div class="product-img">
+                                <img [src]="getImageUrl(product.image)" alt="{{ product.product_name }}"
+                                    onerror="this.src='https://via.placeholder.com/50'">
+                            </div>
+                        </td>
+                        <td>
+                            <strong>{{ product.product_name }}</strong>
+                            <div class="text-sm text-gray">{{ product.title }}</div>
+                        </td>
+                        <td>
+                            <span class="category-badge">{{ product.category }}</span>
+                        </td>
+                        <td>
+                            <strong>{{ product.price | currency:'INR' }}</strong>
+                            <div class="text-sm text-gray">+ {{ product.delivery_charge | currency:'INR' }} Del.</div>
+                        </td>
+                        <td>
+                            <span class="stock-badge"
+                                [ngClass]="{'low-stock': product.stock < 10, 'in-stock': product.stock >= 10}">
+                                {{ product.stock }} in stock
+                            </span>
+                        </td>
+                        <td>
+                            <span title="Total Users who wishlisted this">
+                                ❤️ {{ product.wishlist_count || 0 }}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn-action btn-primary" (click)="copyProductId(product._id)"
+                                    title="Copy Product ID">
+                                    Copy ID
+                                </button>
+                                <button class="btn-action btn-secondary" (click)="openEditModal(product)"
+                                    title="Edit Product">
+                                    Edit
+                                </button>
+                                <button class="btn-action btn-danger" (click)="deleteProduct(product._id)"
+                                    title="Delete Product">
+                                    Delete
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Add/Edit Product Modal -->
+<div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <h3>{{ modalTitle }}</h3>
+            <button class="close-btn" (click)="closeModal()">×</button>
+        </div>
+
+        <div class="modal-body">
+            <form [formGroup]="productForm" (ngSubmit)="saveProduct()">
+
+                <div class="form-row">
+                    <div class="form-group flex-1">
+                        <label>Product Name*</label>
+                        <input type="text" class="form-control" formControlName="product_name"
+                            [class.is-invalid]="productForm.get('product_name')?.invalid && productForm.get('product_name')?.touched">
+                    </div>
+                    <div class="form-group flex-1 ml-3">
+                        <label>Brand/Title*</label>
+                        <input type="text" class="form-control" formControlName="title"
+                            [class.is-invalid]="productForm.get('title')?.invalid && productForm.get('title')?.touched">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Description*</label>
+                    <textarea class="form-control" rows="3" formControlName="description"></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group flex-1">
+                        <label>Category*</label>
+                        <select class="form-control" formControlName="category">
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Kids">Kids</option>
+                        </select>
+                    </div>
+                    <div class="form-group flex-1 ml-3">
+                        <label>Stock Quantity*</label>
+                        <input type="number" class="form-control" formControlName="stock" min="0">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group flex-1">
+                        <label>Price (₹)*</label>
+                        <input type="number" class="form-control" formControlName="price" min="0">
+                    </div>
+                    <div class="form-group flex-1 ml-3">
+                        <label>Delivery Charge (₹)</label>
+                        <input type="number" class="form-control" formControlName="delivery_charge" min="0">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Available Sizes (Comma separated, e.g. S, M, L, XL)</label>
+                    <input type="text" class="form-control" formControlName="sizes" placeholder="S, M, L, XL, XXL">
+                </div>
+
+                <div class="form-group">
+                    <label>Product Image</label>
+                    <div class="file-upload-wrapper">
+                        <input type="file" (change)="onFileSelected($event)" accept="image/*" class="file-input">
+                        <div class="image-preview" *ngIf="filePreview">
+                            <img [src]="filePreview" alt="Preview">
+                        </div>
+                        <div class="upload-placeholder" *ngIf="!filePreview">
+                            <span>Click to upload image</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" (click)="closeModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary ml-2" [disabled]="productForm.invalid">Save
+                        Product</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

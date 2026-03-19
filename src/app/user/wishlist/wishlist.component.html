@@ -1,0 +1,49 @@
+<div class="wishlist-container">
+    <div class="wishlist-header">
+        <h1>My Wishlist</h1>
+        <p>Your favorite products saved for later.</p>
+    </div>
+
+    <div *ngIf="loading" class="loading-state">
+        <div class="spinner"></div>
+    </div>
+
+    <div *ngIf="error" class="error-state">
+        <p>{{ error }}</p>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!loading && !error && wishlistItems.length === 0" class="empty-state">
+        <div class="icon">❤️</div>
+        <h2>Your wishlist is empty</h2>
+        <p>You haven't added any items to your wishlist yet.</p>
+        <button routerLink="/user" class="shop-now-btn">Start Shopping</button>
+    </div>
+
+    <!-- Wishlist Grid -->
+    <div class="products-grid" *ngIf="!loading && !error && wishlistItems.length > 0">
+        <div class="product-card" *ngFor="let product of wishlistItems">
+            <!-- Reuse standard product card style but with a remove button -->
+            <div class="img-wrapper">
+                <img [src]="getImageUrl(product.image)" [alt]="product.product_name" class="product-img">
+                <button class="remove-btn" (click)="removeFromWishlist(product._id)" title="Remove from wishlist">
+                    &times;
+                </button>
+            </div>
+
+            <div class="product-details">
+                <span class="category">{{ product.category }}</span>
+                <h3 class="product-name" [routerLink]="['/user/product', product._id]">{{ product.product_name }}</h3>
+                <p class="description">{{ product.description }}</p>
+                <div class="price-row">
+                    <span class="price">₹{{ product.price }}</span>
+                    <div class="action-buttons">
+                        <button class="view-details-btn" [routerLink]="['/user/product', product._id]">View
+                            Details</button>
+                        <button class="add-to-cart-btn" (click)="addToCart(product)">Add to Cart</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

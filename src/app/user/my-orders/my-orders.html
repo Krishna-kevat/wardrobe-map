@@ -1,0 +1,74 @@
+<div class="orders-container">
+
+    <div class="orders-header">
+        <h1>My Orders</h1>
+        <p>View and track your previous purchases</p>
+    </div>
+
+    <div *ngIf="loading" class="loading-state">
+        <div class="spinner"></div>
+    </div>
+
+    <div *ngIf="error" class="error-state">
+        <p>{{ error }}</p>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!loading && !error && orders.length === 0" class="empty-state">
+        <h2>No orders yet</h2>
+        <p>You haven't placed any orders with us yet.</p>
+        <button routerLink="/user" class="shop-now-btn">Start Shopping</button>
+    </div>
+
+    <!-- Orders List -->
+    <div class="orders-list" *ngIf="!loading && !error && orders.length > 0">
+
+        <div class="order-card" *ngFor="let order of orders">
+
+            <div class="order-card-header">
+                <div class="order-info">
+                    <span class="label">Order Placed</span>
+                    <span class="value">{{ order.created_at | date:'mediumDate' }}</span>
+                </div>
+                <div class="order-info">
+                    <span class="label">Total</span>
+                    <span class="value">₹{{ order.sub_total }}</span>
+                </div>
+                <div class="order-info">
+                    <span class="label">Ship To</span>
+                    <span class="value">{{ order.full_name }}</span>
+                </div>
+                <div class="order-id">
+                    <span class="label">Order ID #</span>
+                    <span class="value id-value">{{ order._id }}</span>
+                </div>
+
+                <div class="order-status-container" style="display: flex; gap: 10px; align-items: center;">
+                    <button class="cancel-order-btn" *ngIf="order.status === 'Pending'" (click)="cancelOrder(order._id)"
+                        style="padding: 4px 10px; font-size: 0.8em; border: 1px solid #dc3545; color: #dc3545; background: transparent; border-radius: 4px; cursor: pointer; transition: all 0.2s;">
+                        Cancel Order
+                    </button>
+                    <div class="order-status" [ngClass]="order.status.toLowerCase()">
+                        {{ order.status }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="order-items">
+                <div class="item-row" *ngFor="let item of order.products">
+                    <div class="item-details">
+                        <span class="item-name">{{ item.product_name }}</span>
+                        <span class="item-qty">Qty: {{ item.quantity }}<span *ngIf="item.size && item.size !== 'N/A'">,
+                                Size: {{ item.size }}</span></span>
+                    </div>
+                    <div class="item-price">
+                        ₹{{ item.price * item.quantity }}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

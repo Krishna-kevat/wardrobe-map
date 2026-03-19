@@ -1,0 +1,67 @@
+<div class="store-hero">
+    <h1>Welcome to Wardrobe Map</h1>
+    <p>Find your next favorite outfit today.</p>
+</div>
+
+<div class="category-tabs">
+    <button [class.active]="categoryFilter === ''" (click)="onFilterChange('')">All</button>
+    <button [class.active]="categoryFilter === 'Male'" (click)="onFilterChange('Male')">Men</button>
+    <button [class.active]="categoryFilter === 'Female'" (click)="onFilterChange('Female')">Women</button>
+    <button [class.active]="categoryFilter === 'Kids'" (click)="onFilterChange('Kids')">Kids</button>
+</div>
+
+<!-- Loading / Error States -->
+<div *ngIf="loading" class="loading-state">
+    <div class="spinner"></div>
+</div>
+<div *ngIf="error" class="error-state">{{ error }}</div>
+
+<!-- Product Grid -->
+<div class="product-grid" *ngIf="!loading && !error">
+    <div *ngIf="products.length === 0" class="empty-state">
+        <p>No products available in this category.</p>
+    </div>
+
+    <div class="product-card" *ngFor="let product of products">
+
+        <div class="product-image">
+            <img [src]="getImageUrl(product.image)" [alt]="product.product_name"
+                [routerLink]="['/user/product', product._id]">
+            <div class="stock-badge" *ngIf="product.stock <= 0">Out of Stock</div>
+
+            <button class="wishlist-btn" [class.active]="wishlistIds.has(product._id)"
+                (click)="toggleWishlist(product, $event)" title="Toggle Wishlist">
+                <span class="heart-icon">{{ wishlistIds.has(product._id) ? '❤️' : '🤍' }}</span>
+            </button>
+        </div>
+
+        <div class="product-info">
+            <span class="product-brand">{{ product.title }}</span>
+            <h3 class="product-name" [routerLink]="['/user/product', product._id]">{{ product.product_name }}</h3>
+
+            <div class="product-footer">
+                <div class="price">
+                    <span class="currency">₹</span>{{ product.price }}
+                </div>
+                <div class="action-buttons"
+                    style="display: flex; gap: 5px; flex-wrap: wrap; justify-content: flex-end; align-items: center; width: 100%;">
+                    <select class="size-select" *ngIf="product.sizes?.length" [(ngModel)]="selectedSizes[product._id]"
+                        (click)="$event.stopPropagation()"
+                        style="padding: 4px; border-radius: 4px; border: 1px solid #ddd; max-width: 70px;">
+                        <option *ngFor="let size of product.sizes" [value]="size">{{ size }}</option>
+                    </select>
+                    <button class="view-details-btn" [routerLink]="['/user/product', product._id]">
+                        View Details
+                    </button>
+                    <button class="add-to-cart-btn" (click)="addToCart(product, $event)"
+                        [disabled]="product.stock <= 0">
+                        <span *ngIf="!userService.isLoggedIn()"
+                            style="font-size: 12px; font-weight: 600; padding: 0 5px;">Login to Buy</span>
+                        <span *ngIf="userService.isLoggedIn()">Add</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

@@ -1,0 +1,28 @@
+<div class="success-container">
+
+    <div class="success-card">
+        <div class="success-icon">
+            ✓
+        </div>
+
+        <h1>Order Placed Successfully!</h1>
+
+        <p class="message">
+            Thank you for shopping with Wardrobe Map. Your order has been placed and is currently being processed.
+        </p>
+
+        <div class="order-id-box" *ngIf="orderId">
+            <span class="label">Your Order ID:</span>
+            <span class="id">{{ orderId }}</span>
+        </div>
+
+        <div class="next-steps">
+            <p>We'll send you a confirmation email with your tracking details shortly.</p>
+        </div>
+
+        <div class="actions">
+            <button routerLink="/user" class="shop-btn">Continue Shopping</button>
+        </div>
+    </div>
+
+</div>

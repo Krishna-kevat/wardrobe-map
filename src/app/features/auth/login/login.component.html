@@ -1,0 +1,175 @@
+<div class="login-container">
+    <div class="login-card">
+        <div class="login-header">
+            <img src="/logo.jpeg" alt="Wardrobe Map Logo" class="login-logo">
+            <h2>Wardrobe Map</h2>
+            <p *ngIf="isRetrievePasswordMode">Retrieve New Password</p>
+            <p *ngIf="isForgotPasswordMode">Reset Your Password</p>
+            <p *ngIf="!isForgotPasswordMode && !isRetrievePasswordMode">{{ isLoginMode ? 'Sign In to Your Account' :
+                'Create a Customer Account' }}
+            </p>
+        </div>
+
+        <!-- Removed Account Type Selection -->
+
+        <form [formGroup]="authForm" (ngSubmit)="onSubmit()">
+
+            <div class="error-msg" *ngIf="errorMessage">
+                {{ errorMessage }}
+            </div>
+
+            <!-- New Password Reveal Success Box -->
+            <div class="success-msg" *ngIf="retrievedPassword"
+                style="background-color: #d4edda; color: #155724; padding: 15px; border-radius: 5px; margin-bottom: 20px; text-align: center; border: 1px solid #c3e6cb;">
+                <strong>Success!</strong><br>
+                Your new temporary password is:<br>
+                <span
+                    style="font-size: 1.5em; font-family: monospace; display: inline-block; margin-top: 10px; background: white; padding: 5px 10px; border-radius: 4px; border: 1px dashed #28a745;">{{
+                    retrievedPassword }}</span>
+                <p style="font-size: 0.85em; margin-top: 10px; margin-bottom: 0;">Please copy it and log in now. This
+                    screen cannot be shown again.</p>
+            </div>
+
+            <!-- Registration Specific Fields -->
+            <ng-container *ngIf="!isLoginMode && !isForgotPasswordMode && !isRetrievePasswordMode">
+                <div class="form-group">
+                    <label for="full_name">Full Name</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="full_name" formControlName="full_name" placeholder="Enter Full Name"
+                            [class.is-invalid]="full_name?.invalid && full_name?.touched">
+                    </div>
+                    <div class="validation-msg" *ngIf="full_name?.invalid && full_name?.touched">
+                        <span *ngIf="full_name?.errors?.['required']">Full name is required.</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="mobile_number">Mobile Number</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="mobile_number" formControlName="mobile_number"
+                            placeholder="10-digit number"
+                            [class.is-invalid]="mobile_number?.invalid && mobile_number?.touched">
+                    </div>
+                    <div class="validation-msg" *ngIf="mobile_number?.invalid && mobile_number?.touched">
+                        <span *ngIf="mobile_number?.errors?.['required']">Mobile number is required.</span>
+                        <span *ngIf="mobile_number?.errors?.['pattern']">Must be a valid 10-digit number.</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="address">Full Address</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="address" formControlName="address" placeholder="Street, Apartment, Floor"
+                            [class.is-invalid]="address?.invalid && address?.touched">
+                    </div>
+                    <div class="validation-msg" *ngIf="address?.invalid && address?.touched">
+                        <span *ngIf="address?.errors?.['required']">Address is required.</span>
+                    </div>
+                </div>
+
+                <div class="form-row form-group-inline">
+                    <div class="form-group flex-1">
+                        <label for="city">City</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="city" formControlName="city" placeholder="City Name"
+                                [class.is-invalid]="city?.invalid && city?.touched">
+                        </div>
+                        <div class="validation-msg" *ngIf="city?.invalid && city?.touched">
+                            <span *ngIf="city?.errors?.['required']">City is required.</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group flex-1" style="margin-left: 10px;">
+                        <label for="state">State</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="state" formControlName="state" placeholder="State Name"
+                                [class.is-invalid]="state?.invalid && state?.touched">
+                        </div>
+                        <div class="validation-msg" *ngIf="state?.invalid && state?.touched">
+                            <span *ngIf="state?.errors?.['required']">State is required.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="pincode">Pincode</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="pincode" formControlName="pincode" placeholder="6-digit Pincode"
+                            [class.is-invalid]="pincode?.invalid && pincode?.touched">
+                    </div>
+                    <div class="validation-msg" *ngIf="pincode?.invalid && pincode?.touched">
+                        <span *ngIf="pincode?.errors?.['required']">Pincode is required.</span>
+                        <span *ngIf="pincode?.errors?.['pattern']">Must be a valid 6-digit number.</span>
+                    </div>
+                </div>
+            </ng-container>
+
+            <!-- Shared Fields -->
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <div class="input-wrapper">
+                    <input type="email" id="email" formControlName="email" placeholder="your@email.com"
+                        [class.is-invalid]="email?.invalid && email?.touched">
+                </div>
+                <div class="validation-msg" *ngIf="email?.invalid && email?.touched">
+                    <span *ngIf="email?.errors?.['required']">Email is required.</span>
+                    <span *ngIf="email?.errors?.['email']">Please enter a valid email.</span>
+                </div>
+            </div>
+
+            <div class="form-group" *ngIf="!isForgotPasswordMode && !isRetrievePasswordMode">
+                <div class="password-header"
+                    style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                    <label for="password" style="margin-bottom: 0;">Password</label>
+                    <a *ngIf="isLoginMode" href="javascript:void(0)" (click)="toggleForgotPassword()"
+                        style="font-size: 0.85em; color: var(--primary-color); text-decoration: none;">Forgot
+                        Password?</a>
+                </div>
+                <div class="input-wrapper">
+                    <input type="password" id="password" formControlName="password" placeholder="••••••••"
+                        [class.is-invalid]="password?.invalid && password?.touched">
+                </div>
+                <div class="validation-msg" *ngIf="password?.invalid && password?.touched">
+                    <span *ngIf="password?.errors?.['required']">Password is required.</span>
+                    <span *ngIf="password?.errors?.['minlength']">Password must be at least 6 characters.</span>
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn" [disabled]="isLoading" *ngIf="!retrievedPassword">
+                <span *ngIf="!isLoading">
+                    {{ isRetrievePasswordMode ? 'Reveal Password' : (isForgotPasswordMode ? 'Send Reset Link' :
+                    (isLoginMode ? 'Login' : 'Register')) }}
+                </span>
+                <span *ngIf="isLoading" class="loader"></span>
+            </button>
+            <div class="validation-msg" *ngIf="authForm.invalid && authForm.touched"
+                style="text-align: center; margin-top: 10px;">
+                <span style="color:red; font-size: 0.9em;">Please check the form fields above.</span>
+            </div>
+
+            <!-- Registration Toggle -->
+            <div class="auth-footer" *ngIf="!isForgotPasswordMode && !isRetrievePasswordMode">
+                <p>
+                    {{ isLoginMode ? "Don't have an account?" : 'Already have an account?' }}
+                    <a href="javascript:void(0)" (click)="toggleMode()">
+                        {{ isLoginMode ? 'Create one now' : 'Sign in instead' }}
+                    </a>
+                </p>
+            </div>
+
+        </form>
+
+        <div class="auth-footer" *ngIf="isForgotPasswordMode || isRetrievePasswordMode || retrievedPassword"
+            style="margin-top: 20px;">
+            <p>
+                <a href="javascript:void(0)" (click)="toggleMode()">
+                    Back to Login
+                </a>
+            </p>
+            <p *ngIf="isLoginMode || isForgotPasswordMode" style="margin-top: 10px;">
+                <a href="javascript:void(0)" (click)="toggleRetrievePassword()">
+                    Retrieve my new password
+                </a>
+            </p>
+        </div>
+    </div>
+</div>

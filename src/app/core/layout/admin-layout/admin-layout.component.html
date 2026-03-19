@@ -1,0 +1,58 @@
+<div class="admin-container">
+  <!-- Sidebar Navigation -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="admin-brand">
+        <img src="/logo.jpeg" alt="Wardrobe Map Logo" class="brand-logo">
+        <h2>Wardrobe Map</h2>
+      </div>
+      <p>Admin Panel</p>
+    </div>
+
+    <nav class="sidebar-nav">
+      <ul>
+        <li>
+          <a routerLink="/admin/dashboard" routerLinkActive="active">
+            Dashboard
+          </a>
+        </li>
+        <li>
+          <a routerLink="/admin/users" routerLinkActive="active">
+            Users
+          </a>
+        </li>
+        <li>
+          <a routerLink="/admin/products" routerLinkActive="active">
+            Products
+          </a>
+        </li>
+        <li>
+          <a routerLink="/admin/orders" routerLinkActive="active">
+            Orders
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button class="logout-btn" (click)="logout()">
+        Logout
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main Content Area -->
+  <main class="main-content">
+    <header class="topbar">
+      <h3>Admin Dashboard</h3>
+      <div class="user-info">
+        <span>Admin User</span>
+        <div class="avatar">A</div>
+      </div>
+    </header>
+
+    <div class="content-wrapper">
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+</div>

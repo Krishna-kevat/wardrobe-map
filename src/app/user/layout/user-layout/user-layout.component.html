@@ -1,0 +1,46 @@
+<div class="storefront-wrapper">
+
+    <header class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <a routerLink="/user" class="brand-link">
+                    <img src="/logo.jpeg" alt="Wardrobe Map Logo" class="brand-logo">
+                    Wardrobe Map
+                </a>
+            </div>
+
+            <nav class="nav-links">
+                <a routerLink="/user" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Home</a>
+
+                <ng-container *ngIf="userService.isLoggedIn()">
+                    <a routerLink="/user/cart" class="cart-link" routerLinkActive="active">
+                        Cart
+                        <span class="cart-badge" *ngIf="cartService.totalQuantity() > 0">
+                            {{ cartService.totalQuantity() }}
+                        </span>
+                    </a>
+                </ng-container>
+
+                <ng-container *ngIf="!userService.isLoggedIn()">
+                    <a routerLink="/login" routerLinkActive="active">Login / Register</a>
+                </ng-container>
+
+                <ng-container *ngIf="userService.isLoggedIn()">
+                    <a routerLink="/user/wishlist" routerLinkActive="active">❤️ Wishlist</a>
+                    <a routerLink="/user/my-orders" routerLinkActive="active">My Orders</a>
+                    <a href="javascript:void(0)" (click)="onLogout($event)" class="logout-link">Logout ({{
+                        userService.getUserName() }})</a>
+                </ng-container>
+            </nav>
+        </div>
+    </header>
+
+    <main class="store-content">
+        <router-outlet></router-outlet>
+    </main>
+
+    <footer class="store-footer">
+        <p>&copy; 2026 Wardrobe Map. All rights reserved.</p>
+    </footer>
+
+</div>

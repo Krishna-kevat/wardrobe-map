@@ -1,0 +1,91 @@
+<div class="page-container">
+    <div class="page-header">
+        <h2>User Management</h2>
+    </div>
+
+    <div class="filters-bar">
+        <div class="search-box">
+            <input type="text" placeholder="Search by name or email..." class="form-control" [(ngModel)]="searchTerm"
+                (keyup.enter)="onSearchChange()">
+            <button class="btn btn-primary ml-2" (click)="onSearchChange()">Search</button>
+        </div>
+
+        <div class="filter-box">
+            <select class="form-control" [(ngModel)]="statusFilter" (change)="onFilterChange()">
+                <option value="">All Statuses</option>
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Loading & Error States -->
+    <div *ngIf="loading" class="text-center p-4">
+        <div class="spinner"></div>
+        <p>Loading users...</p>
+    </div>
+
+    <div *ngIf="error" class="error-alert">
+        {{ error }}
+    </div>
+
+    <!-- Users Table -->
+    <div class="table-card" *ngIf="!loading && !error">
+        <div class="table-responsive">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Contact</th>
+                        <th>Location</th>
+                        <th>Joined</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngIf="users.length === 0">
+                        <td colspan="6" class="text-center py-4">No users found.</td>
+                    </tr>
+                    <tr *ngFor="let user of users">
+                        <td>
+                            <strong>{{ user.full_name }}</strong>
+                            <div class="text-sm text-gray">{{ user.gender }}</div>
+                            <span *ngIf="user.resetPasswordRequest" class="badge bg-danger"
+                                style="font-size: 0.7em; padding: 2px 4px; border-radius: 4px; color: white; background-color: #dc3545; display: inline-block; margin-top: 4px;">Reset
+                                Requested</span>
+                        </td>
+                        <td>
+                            <div>{{ user.email }}</div>
+                            <div class="text-sm text-gray">{{ user.mobile_number }}</div>
+                        </td>
+                        <td>
+                            <div>{{ user.city || 'N/A' }}, {{ user.state || 'N/A' }}</div>
+                            <div class="text-sm text-gray">{{ user.pincode }}</div>
+                        </td>
+                        <td>{{ user.created_at | date:'mediumDate' }}</td>
+                        <td>
+                            <span class="status-badge" [ngClass]="user.status === 'Active' ? 'active' : 'inactive'">
+                                {{ user.status }}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn-action"
+                                    [ngClass]="user.status === 'Active' ? 'btn-warning' : 'btn-success'"
+                                    (click)="toggleStatus(user)"
+                                    [title]="user.status === 'Active' ? 'Deactivate User' : 'Activate User'">
+                                    {{ user.status === 'Active' ? 'Pause' : 'Activate' }}
+                                </button>
+                                <button class="btn-action btn-primary" (click)="resetPassword(user)"
+                                    *ngIf="user.resetPasswordRequest" title="Reset User Password">
+                                    Reset PW
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

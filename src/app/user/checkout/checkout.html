@@ -1,0 +1,124 @@
+<div class="checkout-container">
+
+    <div class="checkout-header">
+        <h1>Checkout</h1>
+        <p>Please review your order and fill in your details to complete your purchase.</p>
+    </div>
+
+    <div class="checkout-content">
+
+        <!-- Checkout Form -->
+        <div class="form-section">
+
+            <div class="error-banner" *ngIf="error">
+                {{ error }}
+            </div>
+
+            <form [formGroup]="checkoutForm" (ngSubmit)="onSubmit()">
+
+                <div class="form-group row">
+                    <div class="col">
+                        <label>Full Name</label>
+                        <input type="text" formControlName="full_name" placeholder="Enter Full Name">
+                        <span class="error-text"
+                            *ngIf="checkoutForm.get('full_name')?.touched && checkoutForm.get('full_name')?.invalid">Full
+                            name is required</span>
+                    </div>
+                    <div class="col">
+                        <label>Email Address</label>
+                        <input type="email" formControlName="email" placeholder="customer@example.com">
+                        <span class="error-text"
+                            *ngIf="checkoutForm.get('email')?.touched && checkoutForm.get('email')?.invalid">Valid email
+                            is required</span>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col">
+                        <label>Mobile Number</label>
+                        <input type="text" formControlName="mobile_number" placeholder="10-digit number">
+                        <span class="error-text"
+                            *ngIf="checkoutForm.get('mobile_number')?.touched && checkoutForm.get('mobile_number')?.invalid">Valid
+                            10-digit number is required</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Shipping Address</label>
+                    <input type="text" formControlName="address" placeholder="123 Main St, Appt 4B">
+                    <span class="error-text"
+                        *ngIf="checkoutForm.get('address')?.touched && checkoutForm.get('address')?.invalid">Address is
+                        required</span>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col">
+                        <label>City</label>
+                        <input type="text" formControlName="city">
+                        <span class="error-text"
+                            *ngIf="checkoutForm.get('city')?.touched && checkoutForm.get('city')?.invalid">City is
+                            required</span>
+                    </div>
+                    <div class="col">
+                        <label>State</label>
+                        <input type="text" formControlName="state">
+                        <span class="error-text"
+                            *ngIf="checkoutForm.get('state')?.touched && checkoutForm.get('state')?.invalid">State is
+                            required</span>
+                    </div>
+                    <div class="col">
+                        <label>Pincode</label>
+                        <input type="text" formControlName="pincode">
+                        <span class="error-text"
+                            *ngIf="checkoutForm.get('pincode')?.touched && checkoutForm.get('pincode')?.invalid">Pincode
+                            is required</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Payment Method</label>
+                    <select formControlName="payment_method">
+                        <option value="COD">Cash on Delivery (COD)</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="submit-btn" [disabled]="checkoutForm.invalid || isSubmitting">
+                    {{ isSubmitting ? 'Processing Order...' : 'Place Order' }}
+                </button>
+
+            </form>
+        </div>
+
+        <!-- Order Final Summary -->
+        <div class="summary-section">
+            <h2>Your Cart</h2>
+
+            <div class="mini-cart">
+                <div class="mini-item" *ngFor="let item of cartService.items()">
+                    <span class="qty">{{ item.quantity }}x</span>
+                    <span class="name">{{ item.product_name }}</span>
+                    <span class="price">₹{{ item.price * item.quantity }}</span>
+                </div>
+            </div>
+
+            <div class="totals-breakdown">
+                <div class="total-row">
+                    <span>Subtotal</span>
+                    <span>₹{{ cartService.subTotal() }}</span>
+                </div>
+                <div class="total-row">
+                    <span>Delivery</span>
+                    <span>₹50</span>
+                </div>
+                <div class="total-row grand">
+                    <span>Total To Pay</span>
+                    <span>₹{{ cartService.subTotal() + 50 }}</span>
+                </div>
+            </div>
+
+            <a routerLink="/user/cart" class="edit-cart-link">Edit Cart</a>
+        </div>
+
+    </div>
+
+</div>
