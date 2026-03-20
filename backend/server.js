@@ -27,6 +27,9 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+app.get("/", (req, res) => {
+    res.send("API Running 🚀");
+});
 // Serve static directory for uploaded images
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
