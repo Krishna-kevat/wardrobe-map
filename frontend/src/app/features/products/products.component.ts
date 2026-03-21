@@ -92,7 +92,7 @@ export class ProductsComponent implements OnInit {
             sizes: product.sizes ? product.sizes.join(', ') : ''
         });
         this.selectedFile = null;
-        this.filePreview = product.image ? 'http://localhost:5000' + product.image : null;
+        this.filePreview = product.image ? 'https://wardrobe-backend-8v0j.onrender.com' + product.image : null;
         this.showModal = true;
     }
 
@@ -165,7 +165,7 @@ export class ProductsComponent implements OnInit {
     }
 
     getImageUrl(imagePath: string): string {
-        return imagePath ? 'http://localhost:5000' + imagePath : 'assets/no-img.png';
+        return imagePath ? 'https://wardrobe-backend-8v0j.onrender.com' + imagePath : 'assets/no-img.png';
     }
 
     copyProductId(id: string) {

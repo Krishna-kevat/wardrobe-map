@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
     providedIn: 'root'
 })
 export class AdminService {
-    private apiUrl = 'http://localhost:5000/api/admin';
+    private apiUrl = 'https://wardrobe-backend-8v0j.onrender.com/api/admin';
 
     constructor(private http: HttpClient, private authService: AuthService) { }
 

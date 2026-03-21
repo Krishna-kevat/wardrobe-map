@@ -8,7 +8,7 @@ import { throwError } from 'rxjs';
     providedIn: 'root'
 })
 export class AuthService {
-    private apiUrl = 'http://localhost:5000/api/admin';
+    private apiUrl = 'https://wardrobe-backend-8v0j.onrender.com/api/admin';
 
     // Signal to store if user is logged in
     isLoggedIn = signal<boolean>(this.hasToken());

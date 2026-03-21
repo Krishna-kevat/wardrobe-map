@@ -7,7 +7,7 @@ import { Router } from '@angular/router';
     providedIn: 'root'
 })
 export class UserService {
-    private apiUrl = 'http://localhost:5000/api/public';
+    private apiUrl = 'https://wardrobe-backend-8v0j.onrender.com/api/public';
 
     constructor(private http: HttpClient, private router: Router) { }
 

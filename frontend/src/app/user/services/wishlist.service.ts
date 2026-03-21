@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
     providedIn: 'root'
 })
 export class WishlistService {
-    private apiUrl = 'http://localhost:5000/api/public/wishlist';
+    private apiUrl = 'https://wardrobe-backend-8v0j.onrender.com/api/public/wishlist';
 
     constructor(private http: HttpClient) { }
 

@@ -35,6 +35,6 @@ export class Cart {
   }
 
   getImageUrl(imagePath: string | undefined): string {
-    return imagePath ? 'http://localhost:5000' + imagePath : 'assets/no-img.png';
+    return imagePath ? 'https://wardrobe-backend-8v0j.onrender.com' + imagePath : 'assets/no-img.png';
   }
 }
