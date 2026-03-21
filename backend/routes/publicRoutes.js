@@ -37,4 +37,7 @@ router.route('/my-orders/:id/cancel').put(protectUser, cancelOrder);
 router.route('/wishlist').get(protectUser, getWishlist);
 router.route('/wishlist/:id').post(protectUser, addToWishlist).delete(protectUser, removeFromWishlist);
 
+router.get('/', (req, res) => {
+    res.json({ message: "Public API Working 🚀" });
+});
 module.exports = router;
